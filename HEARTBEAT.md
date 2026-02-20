@@ -1,16 +1,18 @@
 # HEARTBEAT.md
 
 ## Estado
-Iniciando desarrollo del MVP PWA con Next.js en la raíz del repositorio.
+Corrigiendo configuración de despliegue en Vercel.
 
 ## Cambios realizados
-- Verificación del estado del directorio.
+- Añadido `vercel.json` explícito para forzar framework Next.js.
+- Movido `requirements.txt` a `prototype/` para evitar detección errónea de Python.
 
 ## Resultado
-- Directorio listo para inicialización (con archivos de contexto preservados).
+- Esperando que el nuevo push fuerce la re-detección del framework en Vercel.
 
 ## Cómo probar
-- N/A aún.
+- Esperar ~2 minutos tras el push.
+- Visitar https://legacy-grove.vercel.app/api/health
 
 ## Próximo paso automático
-- Inicializar aplicación Next.js y configurar PWA.
+- Verificar si el despliegue funciona.
