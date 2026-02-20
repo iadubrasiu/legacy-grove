@@ -53,6 +53,20 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="mb-8">
+        <h2 className="text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider pl-1">
+          Inspiración
+        </h2>
+        <Link href="/preguntas" className="block bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700 shadow-sm relative overflow-hidden group">
+          <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-orange-500/10 via-transparent to-transparent group-hover:from-orange-500/20 transition-all" />
+          <h3 className="text-white font-medium mb-1 relative z-10">Pregunta del día</h3>
+          <p className="text-xs text-gray-400 relative z-10">¿Cuál fue el mejor viaje en familia?</p>
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 transform group-hover:translate-x-1 transition-transform">
+            →
+          </div>
+        </Link>
+      </section>
+
       <section className="space-y-4 pb-20">
         <h2 className="text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider pl-1 flex justify-between items-end">
           Recientes

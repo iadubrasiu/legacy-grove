@@ -1,18 +1,24 @@
 # HEARTBEAT.md
 
 ## Estado
-Corrigiendo error de build en Vercel (Next.js 16 + next-pwa).
+Desplegando MVP Funcional (Rutas, Store, UI) en Vercel.
 
 ## Cambios realizados
-- Actualizado `vercel.json` para usar `buildCommand: "next build --webpack"`.
-- Esto fuerza a Next.js a usar Webpack en lugar de Turbopack, necesario para que el plugin `next-pwa` funcione.
+- Implementado sistema de rutas completo (/arbol, /historias, /memoria, /persona).
+- Añadido `zustand` para gestión de estado y persistencia (localStorage).
+- UI mejorada con Tailwind v4 (diseño oscuro premium).
+- PWA manual (SW simple) para evitar conflictos de build.
+- Commit y Push realizado a `main`.
 
 ## Resultado
-- Esperando nuevo despliegue en Vercel.
+- Código subido. Vercel debería estar construyendo ahora mismo.
 
 ## Cómo probar
 - Esperar ~2 minutos.
-- Visitar https://legacy-grove.vercel.app/api/health
+- Visitar https://legacy-grove.vercel.app
+- Navegar por las pestañas inferiores.
+- Crear un recuerdo nuevo.
+- Verificar persistencia al recargar.
 
 ## Próximo paso automático
-- Verificar despliegue.
+- Verificar despliegue exitoso.
