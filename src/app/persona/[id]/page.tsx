@@ -1,13 +1,15 @@
 'use client';
 
 import { useStore } from '../../../store';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import MemoryCard from '../../../components/ui/MemoryCard';
 import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function PersonPage() {
   const params = useParams();
   const { people, memories } = useStore();
+  const router = useRouter();
   const id = params.id as string;
 
   const person = people.find(p => p.id === id);
@@ -25,6 +27,14 @@ export default function PersonPage() {
   return (
     <div className="pb-24">
       <div className="relative h-48 bg-gradient-to-b from-[#FF9F43]/20 to-[#121212]">
+        <div className="absolute top-4 left-4 z-10">
+          <button 
+            onClick={() => router.back()} 
+            className="p-2 bg-black/30 backdrop-blur-md rounded-full text-white hover:bg-black/50 transition-colors"
+          >
+            <ArrowLeft size={24} />
+          </button>
+        </div>
         <div className="absolute -bottom-10 left-6">
           <div className={`w-24 h-24 ${person.color} rounded-full border-4 border-[#121212] flex items-center justify-center text-4xl font-bold shadow-xl text-white`}>
             {person.avatar}

@@ -44,7 +44,7 @@ export default function Home() {
               </span>
             </Link>
           ))}
-          <Link href="/arbol" className="flex-shrink-0 flex flex-col items-center group">
+          <Link href="/persona/nueva" className="flex-shrink-0 flex flex-col items-center group">
              <div className="w-14 h-14 bg-gray-800 rounded-full border border-dashed border-gray-600 flex items-center justify-center text-gray-400 group-hover:bg-gray-700 group-hover:border-gray-500 transition-all">
                 <Plus size={20} />
              </div>

@@ -21,6 +21,7 @@ export type Store = {
   people: Person[];
   memories: Memory[];
   addMemory: (memory: Omit<Memory, 'id' | 'createdAt'>) => void;
+  addPerson: (person: Omit<Person, 'id'>) => void;
   getPerson: (id: string) => Person | undefined;
   getMemory: (id: string) => Memory | undefined;
 };

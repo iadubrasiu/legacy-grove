@@ -6,6 +6,7 @@ interface StoreState {
   people: Person[];
   memories: Memory[];
   addMemory: (memory: Omit<Memory, 'id' | 'createdAt'>) => void;
+  addPerson: (person: Omit<Person, 'id'>) => void;
   getPerson: (id: string) => Person | undefined;
   getMemory: (id: string) => Memory | undefined;
 }
@@ -56,6 +57,13 @@ export const useStore = create<StoreState>()(
               ...memory,
             },
             ...state.memories,
+          ],
+        })),
+      addPerson: (person) =>
+        set((state) => ({
+          people: [
+            ...state.people,
+            { id: Math.random().toString(36).substring(2, 9), ...person },
           ],
         })),
       getPerson: (id) => get().people.find((p) => p.id === id),
