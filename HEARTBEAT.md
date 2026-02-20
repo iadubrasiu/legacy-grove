@@ -1,22 +1,16 @@
 # HEARTBEAT.md
 
-Si no hay nada que reportar, responde exactamente:
-
-HEARTBEAT_OK
-
-Si hay cambios, usa este formato:
-
 ## Estado
-(descripción breve)
+Iniciando desarrollo del MVP PWA con Next.js en la raíz del repositorio.
 
 ## Cambios realizados
-(lista concreta)
+- Verificación del estado del directorio.
 
 ## Resultado
-(qué funciona)
+- Directorio listo para inicialización (con archivos de contexto preservados).
 
 ## Cómo probar
-(comandos exactos)
+- N/A aún.
 
-## Próximo paso
-(siguiente acción)
+## Próximo paso automático
+- Inicializar aplicación Next.js y configurar PWA.

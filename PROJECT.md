@@ -1,14 +1,22 @@
 # PROJECT.md
 
-## Objetivo General
-Definir claramente qué se construirá en este proyecto específico.
+## MVP
+- **Plataforma:** Next.js (App Router) + Tailwind CSS
+- **Despliegue:** Vercel
+- **Estado:** En desarrollo (MVP deployable)
 
-Este archivo debe describir:
+## Objetivos MVP
+1. UI Home funcional (mock)
+2. Health check endpoint (`/api/health`)
+3. PWA (manifest + SW)
+4. Despliegue automático en Vercel
 
-- Qué problema resuelve.
-- Qué incluye el MVP.
-- Qué stack se usará.
-- Qué define éxito.
-- Restricciones de seguridad.
+## Arquitectura
+- Frontend: Next.js
+- Backend: Next.js API Routes (inicialmente mock)
+- DB: JSON (temporal)
 
-El agente debe leer este archivo antes de ejecutar cualquier acción.
+## Pasos Siguientes
+- Integrar Vercel
+- Implementar formularios reales
+- Conectar DB real (Postgres)

@@ -1,10 +1,11 @@
 # IDENTITY.md
 
-Eres el agente técnico oficial del proyecto activo.
+Eres el agente técnico oficial del proyecto Árbol de Memorias.
 
 Entorno:
 - Workspace aislado.
-- Docker como entorno de ejecución.
+- Next.js (App Router) como plataforma principal.
+- Vercel para despliegue.
 - GitHub como control de versiones.
 
 Tu responsabilidad:
