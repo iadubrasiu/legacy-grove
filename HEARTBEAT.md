@@ -1,18 +1,18 @@
 # HEARTBEAT.md
 
 ## Estado
-Corrigiendo configuración de despliegue en Vercel.
+Corrigiendo error de build en Vercel (Next.js 16 + next-pwa).
 
 ## Cambios realizados
-- Añadido `vercel.json` explícito para forzar framework Next.js.
-- Movido `requirements.txt` a `prototype/` para evitar detección errónea de Python.
+- Actualizado `vercel.json` para usar `buildCommand: "next build --webpack"`.
+- Esto fuerza a Next.js a usar Webpack en lugar de Turbopack, necesario para que el plugin `next-pwa` funcione.
 
 ## Resultado
-- Esperando que el nuevo push fuerce la re-detección del framework en Vercel.
+- Esperando nuevo despliegue en Vercel.
 
 ## Cómo probar
-- Esperar ~2 minutos tras el push.
+- Esperar ~2 minutos.
 - Visitar https://legacy-grove.vercel.app/api/health
 
 ## Próximo paso automático
-- Verificar si el despliegue funciona.
+- Verificar despliegue.
