@@ -2,11 +2,12 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "../components/ui/Navbar";
+import Providers from "./providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Árbol de Memorias",
+  title: "Árbol de Recuerdos",
   description: "Preserva tus recuerdos familiares",
   manifest: "/manifest.json",
 };
@@ -26,12 +27,14 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={`${inter.className} bg-[#121212] text-white overflow-hidden h-screen`}>
-        <div className="flex flex-col h-full max-w-md mx-auto relative bg-[#121212] shadow-2xl border-x border-gray-800">
-          <main className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
-            {children}
-          </main>
-          <Navbar />
-        </div>
+        <Providers>
+          <div className="flex flex-col h-full max-w-md mx-auto relative bg-[#121212] shadow-2xl border-x border-gray-800">
+            <main className="flex-1 overflow-y-auto pb-24 scrollbar-hide">
+              {children}
+            </main>
+            <Navbar />
+          </div>
+        </Providers>
       </body>
     </html>
   );

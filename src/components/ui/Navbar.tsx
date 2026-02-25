@@ -1,18 +1,19 @@
 'use client';
 
 import Link from 'next/link';
-import { Home, TreeDeciduous, BookOpen, User } from 'lucide-react';
+import { Home, TreeDeciduous, BookOpen, User, LogIn, LogOut, UserPlus } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { clsx } from 'clsx';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { data: session, status } = useSession();
 
   const navItems = [
     { href: '/', icon: Home, label: 'Inicio' },
     { href: '/historias', icon: BookOpen, label: 'Historias' },
     { href: '/arbol', icon: TreeDeciduous, label: 'Árbol' },
-    { href: '/persona/1', icon: User, label: 'Perfil' },
   ];
 
   return (
@@ -34,6 +35,43 @@ export default function Navbar() {
             </Link>
           );
         })}
+
+        {status === 'authenticated' ? (
+          <button 
+            onClick={() => signOut({ callbackUrl: '/login' })} 
+            className={clsx(
+              "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
+              pathname === '/logout' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+            )}
+          >
+            <LogOut size={24} strokeWidth={2} />
+            <span className="text-[10px] mt-1 font-medium">Logout</span>
+          </button>
+        ) : (
+          <>
+            <Link 
+              href="/login" 
+              className={clsx(
+                "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
+                pathname === '/login' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+              )}
+            >
+              <LogIn size={24} strokeWidth={2} />
+              <span className="text-[10px] mt-1 font-medium">Login</span>
+            </Link>
+            <Link 
+              href="/register" 
+              className={clsx(
+                "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
+                pathname === '/register' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+              )}
+            >
+              <UserPlus size={24} strokeWidth={2} />
+              <span className="text-[10px] mt-1 font-medium">Register</span>
+            </Link>
+          </>
+        )}
+
       </div>
     </nav>
   );

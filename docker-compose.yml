@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  nextapp:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./.env:/app/.env
+      - ./dev.db:/app/dev.db
+    environment:
+      - DATABASE_URL=file:./dev.db
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+    restart: unless-stopped

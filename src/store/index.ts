@@ -6,6 +6,7 @@ interface StoreState {
   people: Person[];
   memories: Memory[];
   addMemory: (memory: Omit<Memory, 'id' | 'createdAt'>) => void;
+  updateMemory: (id: string, memory: Partial<Omit<Memory, 'id' | 'createdAt'>>) => void;
   addPerson: (person: Omit<Person, 'id'>) => void;
   getPerson: (id: string) => Person | undefined;
   getMemory: (id: string) => Memory | undefined;
@@ -58,6 +59,12 @@ export const useStore = create<StoreState>()(
             },
             ...state.memories,
           ],
+        })),
+      updateMemory: (id, updatedMemory) =>
+        set((state) => ({
+          memories: state.memories.map((m) =>
+            m.id === id ? { ...m, ...updatedMemory } : m
+          ),
         })),
       addPerson: (person) =>
         set((state) => ({
