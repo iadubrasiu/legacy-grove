@@ -14,13 +14,13 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // BYPASS DE TEST PARA ALEJANDRO: Entrar sin comprobar contraseña
+        // BYPASS TOTAL: Si es Alejandro, entra DIRECTO.
         if (credentials?.email === 'asilvafx24@gmail.com') {
+           // Intentamos buscarlo para tener el ID real
            const user = await prisma.user.findUnique({
             where: { email: credentials.email },
           });
           
-          // Si el usuario existe en la DB (que debería por el seed), lo devolvemos directo
           if (user) {
             return {
               id: user.id,
@@ -28,6 +28,13 @@ export const authOptions: NextAuthOptions = {
               email: user.email,
             };
           }
+          
+          // FALLBACK EXTREMO: Si la DB falla, devolvemos usuario mock para que veas la UI al menos
+          return {
+             id: 'fallback-id',
+             name: 'Alejandro Silva',
+             email: 'asilvafx24@gmail.com'
+          };
         }
 
         if (!credentials?.email || !credentials?.password) {
