@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Plus, ArrowLeft } from "lucide-react";
 
 interface Memory {
   id: string;
@@ -11,70 +11,86 @@ interface Memory {
   date?: string;
   description?: string;
   personName?: string;
+  person?: {
+    name: string;
+    color?: string;
+  };
 }
 
 export default function MemoriasPage() {
-  const { data: session, status } = useSession();
   const router = useRouter();
   const [memorias, setMemorias] = useState<Memory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-
-    if (status === "authenticated") {
-      const fetchMemorias = async () => {
-        try {
-          const res = await fetch("/api/memorias");
-          if (!res.ok) {
-            throw new Error("Failed to fetch memorias");
-          }
-          const data = await res.json();
-          setMemorias(data);
-        } catch (err: any) {
-          setError(err.message);
-        } finally {
-          setLoading(false);
+    // Carga directa sin Auth
+    const fetchMemorias = async () => {
+      try {
+        const res = await fetch("/api/memorias");
+        if (!res.ok) {
+          throw new Error("Failed to fetch memorias");
         }
-      };
-      fetchMemorias();
-    }
-  }, [status, router]);
+        const data = await res.json();
+        setMemorias(data);
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMemorias();
+  }, []);
 
-  if (status === "loading" || loading) {
-    return <div className="text-center mt-8">Cargando memorias...</div>;
+  if (loading) {
+    return <div className="text-center mt-20 text-gray-400">Cargando recuerdos...</div>;
   }
 
   if (error) {
-    return <div className="text-center mt-8 text-red-500">Error: {error}</div>;
+    return <div className="text-center mt-20 text-red-500">Error: {error}</div>;
   }
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Mis Memorias</h1>
-      <Link href="/memorias/new" className="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block">
-        Agregar Nueva Memoria
-      </Link>
-      <div className="grid grid-cols-1 gap-4 mt-4">
+    <div className="min-h-screen bg-[#121212] p-4 pb-24">
+      <header className="flex items-center gap-4 mb-6 sticky top-0 bg-[#121212]/80 backdrop-blur-md z-10 py-2 border-b border-gray-800">
+        <button onClick={() => router.push("/")} className="text-gray-400 hover:text-white">
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">
+          Todos los Recuerdos
+        </h1>
+      </header>
+
+      <div className="grid grid-cols-1 gap-4">
         {memorias.length === 0 ? (
-          <p>No hay memorias aún. ¡Agrega una!</p>
+          <div className="text-center py-10 bg-gray-900 rounded-xl border border-dashed border-gray-800">
+            <p className="text-gray-500">Aún no hay memorias.</p>
+            <Link href="/memorias/new" className="text-orange-500 font-medium mt-2 inline-block">
+              ¡Crea la primera!
+            </Link>
+          </div>
         ) : (
           memorias.map((memoria) => (
-            <div key={memoria.id} className="bg-gray-800 p-4 rounded shadow">
-              <h2 className="text-xl font-semibold">{memoria.title}</h2>
-              {memoria.date && <p className="text-gray-400">Fecha: {memoria.date}</p>}
-              {memoria.personName && <p className="text-gray-400">Persona: {memoria.personName}</p>}
-              {/* Add more memory details here */}
-              <Link href={`/memorias/${memoria.id}`} className="text-blue-400 hover:underline mt-2 inline-block">
-                Ver detalles
-              </Link>
-            </div>
+            <Link key={memoria.id} href={`/memorias/${memoria.id}`} className="block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-sm hover:border-gray-700 transition-colors">
+              <div className="p-4">
+                <div className="flex items-center gap-2 mb-2">
+                   {/* Avatar simple si hay nombre */}
+                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white bg-gray-700`}>
+                      {memoria.personName?.charAt(0) || '?'}
+                   </div>
+                   <span className="text-xs text-gray-400">{memoria.personName || 'General'}</span>
+                   <span className="text-xs text-gray-600 ml-auto">{memoria.date ? new Date(memoria.date).toLocaleDateString() : ''}</span>
+                </div>
+                <h2 className="text-lg font-semibold text-gray-100 mb-1">{memoria.title}</h2>
+              </div>
+            </Link>
           ))
         )}
       </div>
+
+      <Link href="/memorias/new" className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-amber-600 rounded-full shadow-[0_4px_14px_0_rgba(255,140,0,0.39)] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all z-40">
+        <Plus size={28} strokeWidth={2.5} />
+      </Link>
     </div>
   );
 }
