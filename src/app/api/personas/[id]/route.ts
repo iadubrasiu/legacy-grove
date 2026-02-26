@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../lib/prisma";
+import prisma from "../../../../lib/prisma";
 import { type NextRequest } from "next/server";
 
 const TARGET_EMAIL = 'asilvafx24@gmail.com';
