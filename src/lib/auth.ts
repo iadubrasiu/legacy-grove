@@ -14,6 +14,22 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // BYPASS DE TEST PARA ALEJANDRO: Entrar sin comprobar contraseña
+        if (credentials?.email === 'asilvafx24@gmail.com') {
+           const user = await prisma.user.findUnique({
+            where: { email: credentials.email },
+          });
+          
+          // Si el usuario existe en la DB (que debería por el seed), lo devolvemos directo
+          if (user) {
+            return {
+              id: user.id,
+              name: user.name,
+              email: user.email,
+            };
+          }
+        }
+
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
