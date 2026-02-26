@@ -12,6 +12,7 @@ interface Memory {
   date: string;
   personId?: string;
   personName?: string;
+  audioData?: string; // Campo nuevo
 }
 
 export default function MemoryDetailsPage() {
@@ -72,12 +73,6 @@ export default function MemoryDetailsPage() {
       </header>
 
       <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-sm">
-interface Memory {
-  // ...
-  audioData?: string;
-}
-
-// ... en el JSX ...
         <h1 className="text-2xl font-bold text-white mb-2 leading-tight">{memory.title}</h1>
         
         {memory.audioData && (

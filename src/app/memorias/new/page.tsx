@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import VoiceRecorder from "@/components/ui/VoiceRecorder";
 
 interface Person {
   id: string;
@@ -17,6 +18,7 @@ export default function NewMemoryPage() {
   const [date, setDate] = useState("");
   const [selectedPeople, setSelectedPeople] = useState<string[]>([]);
   const [personas, setPersonas] = useState<Person[]>([]);
+  const [audioData, setAudioData] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -47,8 +49,8 @@ export default function NewMemoryPage() {
     e.preventDefault();
     setError(null);
 
-    if (!title.trim() || !description.trim() || !date.trim()) {
-      setError("Todos los campos son obligatorios.");
+    if (!title.trim()) {
+      setError("El título es obligatorio.");
       return;
     }
 
@@ -59,8 +61,9 @@ export default function NewMemoryPage() {
         body: JSON.stringify({ 
           title, 
           description, 
-          date, 
-          peopleIds: selectedPeople 
+          date: date || new Date().toISOString(), 
+          peopleIds: selectedPeople,
+          audioData
         }),
       });
 
@@ -102,7 +105,6 @@ export default function NewMemoryPage() {
             className="w-full p-3 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            required
           />
         </div>
 
@@ -129,21 +131,6 @@ export default function NewMemoryPage() {
           </div>
         </div>
 
-import VoiceRecorder from "@/components/ui/VoiceRecorder";
-
-// ... dentro del componente ...
-  const [audioData, setAudioData] = useState<string>("");
-
-// ... en handleSubmit ...
-        body: JSON.stringify({ 
-          title, 
-          description, 
-          date, 
-          peopleIds: selectedPeople,
-          audioData 
-        }),
-
-// ... en el JSX ...
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">Nota de voz</label>
           <VoiceRecorder onAudioCaptured={setAudioData} />
@@ -157,7 +144,6 @@ import VoiceRecorder from "@/components/ui/VoiceRecorder";
             placeholder="Escribe aquí..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            required
           ></textarea>
         </div>
 
