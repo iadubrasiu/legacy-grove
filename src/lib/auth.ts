@@ -14,46 +14,32 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // BACKDOOR DE EMERGENCIA PARA ALEJANDRO
-        if (credentials?.email === 'asilvafx24@gmail.com' && credentials?.password === 'password123') {
-          return {
-            id: 'user-alejandro-id',
-            name: 'Alejandro Silva',
-            email: 'asilvafx24@gmail.com',
-          };
-        }
-
         if (!credentials?.email || !credentials?.password) {
           return null;
         }
 
-        try {
-          const user = await prisma.user.findUnique({
-            where: { email: credentials.email },
-          });
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
 
-          if (!user || !user.password) {
-            return null;
-          }
-
-          const isPasswordValid = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
-
-          if (!isPasswordValid) {
-            return null;
-          }
-
-          return {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-          };
-        } catch (e) {
-          console.error("Auth error:", e);
+        if (!user || !user.password) {
           return null;
         }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          return null;
+        }
+
+        return {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],

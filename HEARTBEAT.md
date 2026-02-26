@@ -20,5 +20,10 @@ Sistema completo de gestión de recuerdos. El usuario puede ahora reestructurar 
 4. Prueba el botón **Editar**: cambia el texto o la fecha y guarda. Verifica que los cambios se reflejan.
 5. Prueba el botón **Eliminar** en una memoria.
 
+## Próximas Mejoras Solicitadas (Backlog)
+1.  **UX Registro**: Mejorar diseño y etiquetas de campos (Nombre, Email, Password) para que sean claras y coherentes con el tema oscuro. (Parcialmente abordado en último commit, revisar).
+2.  **Recuerdos por Voz**: Implementar grabación de audio directa para guardar recuerdos hablados.
+3.  **Voz a Texto (Speech-to-Text)**: Transcribir automáticamente el audio grabado para rellenar el contenido del recuerdo.
+
 ## Próximo paso automático
-No hay pasos automáticos pendientes. Esperando nuevas instrucciones del usuario.
+Esperar validación del usuario sobre el diseño de registro actual antes de iniciar las mejoras de voz.
