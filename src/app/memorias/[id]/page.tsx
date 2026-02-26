@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
+import { ArrowLeft, Edit, Trash2 } from "lucide-react";
 
 interface Memory {
   id: string;
@@ -39,7 +40,7 @@ export default function MemoryDetailsPage() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!confirm("¿Estás seguro?")) return;
+    if (!confirm("¿Estás seguro de que quieres eliminar esta memoria?")) return;
     try {
       const res = await fetch(`/api/memorias/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to delete memory");
@@ -50,39 +51,40 @@ export default function MemoryDetailsPage() {
     }
   };
 
-  if (loading) return <div className="text-center mt-8 text-white">Cargando...</div>;
-  if (error) return <div className="text-center mt-8 text-red-500">Error: {error}</div>;
-  if (!memory) return <div className="text-center mt-8 text-white">Memoria no encontrada.</div>;
+  if (loading) return <div className="text-center mt-20 text-gray-400">Cargando...</div>;
+  if (error) return <div className="text-center mt-20 text-red-500">Error: {error}</div>;
+  if (!memory) return <div className="text-center mt-20 text-gray-400">Memoria no encontrada.</div>;
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl min-h-screen bg-[#121212]">
-      <div className="bg-gray-900 shadow rounded-lg p-6 border border-gray-800">
-        <h1 className="text-3xl font-bold text-white mb-2">{memory.title}</h1>
+    <div className="min-h-screen bg-[#121212] p-4 pb-24">
+      <header className="flex items-center justify-between mb-6 sticky top-0 bg-[#121212]/90 backdrop-blur-md z-10 py-2">
+        <button onClick={() => router.back()} className="text-gray-400 hover:text-white p-2 -ml-2">
+          <ArrowLeft size={24} />
+        </button>
+        <div className="flex gap-4">
+          <button onClick={() => router.push(`/memorias/${id}/edit`)} className="text-blue-400 hover:text-blue-300 p-2">
+            <Edit size={20} />
+          </button>
+          <button onClick={handleDelete} className="text-red-500 hover:text-red-400 p-2 -mr-2">
+            <Trash2 size={20} />
+          </button>
+        </div>
+      </header>
+
+      <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-sm">
+        <h1 className="text-2xl font-bold text-white mb-2 leading-tight">{memory.title}</h1>
         
-        <div className="text-sm text-gray-500 mb-6 flex gap-4">
+        <div className="flex items-center justify-between text-sm text-gray-500 mb-6 border-b border-gray-800 pb-4">
           <span>{new Date(memory.date).toLocaleDateString()}</span>
           {memory.personName && (
-            <span>
-              Vinculado a: <Link href={`/personas/${memory.personId}`} className="text-orange-500 hover:underline font-medium">{memory.personName}</Link>
-            </span>
+            <Link href={`/personas/${memory.personId}`} className="text-orange-500 hover:underline font-medium flex items-center gap-1">
+              {memory.personName}
+            </Link>
           )}
         </div>
 
-        <div className="prose prose-invert max-w-none mb-8 text-gray-300 whitespace-pre-wrap">
-          {memory.content}
-        </div>
-
-        <div className="flex gap-4 pt-4 border-t border-gray-800">
-          <button onClick={() => router.push("/")} className="px-4 py-2 border border-gray-700 rounded text-gray-300 hover:bg-gray-800 transition-colors">
-            Volver
-          </button>
-          <div className="flex-1"></div>
-          <button onClick={() => router.push(`/memorias/${id}/edit`)} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-            Editar
-          </button>
-          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
-            Eliminar
-          </button>
+        <div className="prose prose-invert max-w-none text-gray-300 whitespace-pre-wrap leading-relaxed text-base">
+          {memory.content || <span className="italic text-gray-600">Sin contenido...</span>}
         </div>
       </div>
     </div>
