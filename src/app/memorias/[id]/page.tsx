@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 interface Memory {
@@ -17,23 +16,16 @@ interface Memory {
 export default function MemoryDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [memory, setMemory] = useState<Memory | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-
-    if (status === "authenticated" && id) {
+    if (id) {
       const fetchMemory = async () => {
         try {
           const res = await fetch(`/api/memorias/${id}`);
-          if (!res.ok) {
-            throw new Error("Failed to fetch memory");
-          }
+          if (!res.ok) throw new Error("Failed to fetch memory");
           const data = await res.json();
           setMemory(data);
         } catch (err: any) {
@@ -44,80 +36,51 @@ export default function MemoryDetailsPage() {
       };
       fetchMemory();
     }
-  }, [status, router, id]);
+  }, [id]);
 
   const handleDelete = async () => {
-    if (!confirm("¿Estás seguro de que quieres eliminar esta memoria? Esta acción no se puede deshacer.")) {
-      return;
-    }
-
+    if (!confirm("¿Estás seguro?")) return;
     try {
-      const res = await fetch(`/api/memorias/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) {
-        throw new Error("Failed to delete memory");
-      }
-
-      router.push("/memorias");
+      const res = await fetch(`/api/memorias/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete memory");
+      router.push("/");
       router.refresh();
     } catch (err: any) {
-      alert("Error al eliminar: " + err.message);
+      alert("Error: " + err.message);
     }
   };
 
-  if (status === "loading" || loading) {
-    return <div className="text-center mt-8">Cargando detalles de la memoria...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center mt-8 text-red-500">Error: {error}</div>;
-  }
-
-  if (!memory) {
-    return <div className="text-center mt-8">Memoria no encontrada.</div>;
-  }
+  if (loading) return <div className="text-center mt-8 text-white">Cargando...</div>;
+  if (error) return <div className="text-center mt-8 text-red-500">Error: {error}</div>;
+  if (!memory) return <div className="text-center mt-8 text-white">Memoria no encontrada.</div>;
 
   return (
-    <div className="container mx-auto p-4 max-w-2xl">
-      <div className="bg-white shadow rounded-lg p-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">{memory.title}</h1>
+    <div className="container mx-auto p-4 max-w-2xl min-h-screen bg-[#121212]">
+      <div className="bg-gray-900 shadow rounded-lg p-6 border border-gray-800">
+        <h1 className="text-3xl font-bold text-white mb-2">{memory.title}</h1>
         
         <div className="text-sm text-gray-500 mb-6 flex gap-4">
           <span>{new Date(memory.date).toLocaleDateString()}</span>
           {memory.personName && (
             <span>
-              Vinculado a: <Link href={`/personas/${memory.personId}`} className="text-blue-600 hover:underline font-medium">{memory.personName}</Link>
+              Vinculado a: <Link href={`/personas/${memory.personId}`} className="text-orange-500 hover:underline font-medium">{memory.personName}</Link>
             </span>
           )}
         </div>
 
-        <div className="prose max-w-none mb-8 text-gray-700 whitespace-pre-wrap">
+        <div className="prose prose-invert max-w-none mb-8 text-gray-300 whitespace-pre-wrap">
           {memory.content}
         </div>
 
-        <div className="flex gap-4 pt-4 border-t border-gray-100">
-          <button 
-            onClick={() => router.push("/memorias")} 
-            className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50 transition-colors"
-          >
+        <div className="flex gap-4 pt-4 border-t border-gray-800">
+          <button onClick={() => router.push("/")} className="px-4 py-2 border border-gray-700 rounded text-gray-300 hover:bg-gray-800 transition-colors">
             Volver
           </button>
-          
           <div className="flex-1"></div>
-
-          <button 
-            onClick={() => router.push(`/memorias/${id}/edit`)}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
-          >
+          <button onClick={() => router.push(`/memorias/${id}/edit`)} className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
             Editar
           </button>
-          
-          <button 
-            onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
-          >
+          <button onClick={handleDelete} className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
             Eliminar
           </button>
         </div>

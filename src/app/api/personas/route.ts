@@ -1,18 +1,16 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
 import prisma from "../../../lib/prisma";
 
+// HARDCODED USER FOR PUBLIC ACCESS
+const TARGET_EMAIL = 'asilvafx24@gmail.com';
+
 export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
   try {
+    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
+    if (!user) return new NextResponse("User not found", { status: 404 });
+
     const personas = await prisma.person.findMany({
-      where: { userId: session.user.id as string },
+      where: { userId: user.id },
     });
     return NextResponse.json(personas);
   } catch (error: any) {
@@ -22,13 +20,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
   try {
+    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
+    if (!user) return new NextResponse("User not found", { status: 404 });
+
     const { name } = await request.json();
 
     if (!name) {
@@ -38,8 +33,8 @@ export async function POST(request: Request) {
     const newPerson = await prisma.person.create({
       data: {
         name,
-        role: "Miembro", // Default role
-        userId: session.user.id as string,
+        role: "Miembro", 
+        userId: user.id,
       },
     });
     return NextResponse.json(newPerson, { status: 201 });

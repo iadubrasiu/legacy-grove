@@ -1,28 +1,25 @@
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../../lib/auth";
 import prisma from "../../../lib/prisma";
 
+const TARGET_EMAIL = 'asilvafx24@gmail.com';
+
 export async function GET() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
   try {
+    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
+    if (!user) return new NextResponse("User not found", { status: 404 });
+
     const memorias = await prisma.memory.findMany({
-      where: { userId: session.user.id as string },
+      where: { userId: user.id },
       include: {
-        person: { select: { name: true } }, // Include person's name
+        person: { select: { name: true } }, 
       },
       orderBy: { date: "desc" },
     });
 
     const formattedMemorias = memorias.map((memoria: any) => ({
       ...memoria,
-      personName: memoria.person?.name || null, // Add personName for display
-      date: memoria.date.toISOString().split('T')[0], // Format date to YYYY-MM-DD
+      personName: memoria.person?.name || null,
+      date: memoria.date.toISOString().split('T')[0],
     }));
 
     return NextResponse.json(formattedMemorias);
@@ -33,13 +30,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return new NextResponse("Unauthorized", { status: 401 });
-  }
-
   try {
+    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
+    if (!user) return new NextResponse("User not found", { status: 404 });
+
     const { title, description, date, personId } = await request.json();
 
     if (!title || !description || !date) {
@@ -50,9 +44,9 @@ export async function POST(request: Request) {
       data: {
         title,
         content: description,
-        date: new Date(date), // Convert date string to Date object
-        userId: session.user.id as string,
-        personId: personId || null, // Allow null if no person is selected
+        date: new Date(date), 
+        userId: user.id,
+        personId: personId || null, 
       },
     });
     return NextResponse.json(newMemory, { status: 201 });

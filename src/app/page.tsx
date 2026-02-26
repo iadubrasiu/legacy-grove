@@ -1,47 +1,30 @@
 import Link from "next/link";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../lib/auth";
 import prisma from "../lib/prisma";
 import { Plus } from "lucide-react";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  // YA NO HAY LOGIN. Buscamos directamente a tu usuario para cargar SU familia.
+  const user = await prisma.user.findUnique({
+    where: { email: 'asilvafx24@gmail.com' }
+  });
 
-  if (!session) {
-    // Landing page para usuarios no logueados
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-[#121212]">
-        <h1 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-600">
-          Árbol de Recuerdos
-        </h1>
-        <p className="text-gray-400 mb-8 max-w-md">
-          Preserva tus recuerdos familiares de forma segura y compártelos con tus seres queridos.
-        </p>
-        <div className="space-y-4 w-full max-w-xs">
-          <Link href="/login" className="block w-full py-3 px-4 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg transition-colors">
-            Iniciar Sesión
-          </Link>
-          <Link href="/register" className="block w-full py-3 px-4 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-lg border border-gray-700 transition-colors">
-            Registrarse
-          </Link>
-        </div>
-      </div>
-    );
-  }
+  // Si por lo que sea no existe, fallback a uno vacío para no romper, pero debería existir.
+  const userId = user?.id || '';
+  const userName = user?.name || 'Familia';
 
-  // Cargar datos reales para el usuario logueado
+  // Cargar datos reales
   const people = await prisma.person.findMany({
-    where: { userId: session.user.id },
+    where: { userId: userId },
   });
 
   const memories = await prisma.memory.findMany({
-    where: { userId: session.user.id },
+    where: { userId: userId },
     orderBy: { createdAt: 'desc' },
     take: 5,
     include: { person: true }
   });
 
-  const userInitial = session.user.name ? session.user.name.charAt(0).toUpperCase() : session.user.email?.charAt(0).toUpperCase() || 'U';
+  const userInitial = userName.charAt(0).toUpperCase();
 
   return (
     <div className="p-4 relative min-h-screen bg-[#121212] pb-24">
@@ -49,7 +32,7 @@ export default async function Home() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">
-              Hola, {session.user.name?.split(' ')[0] || 'Familia'}
+              Hola, {userName.split(' ')[0]}
             </h1>
             <p className="text-gray-400 text-xs mt-0.5 tracking-wide uppercase">
               {memories.length} recuerdos recientes
