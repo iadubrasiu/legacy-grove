@@ -11,14 +11,15 @@ export async function GET() {
     const memorias = await prisma.memory.findMany({
       where: { userId: user.id },
       include: {
-        person: { select: { name: true } }, 
+        people: { select: { name: true, color: true } }, 
       },
       orderBy: { date: "desc" },
     });
 
     const formattedMemorias = memorias.map((memoria: any) => ({
       ...memoria,
-      personName: memoria.person?.name || null,
+      peopleNames: memoria.people.map((p: any) => p.name).join(", "),
+      people: memoria.people,
       date: memoria.date.toISOString().split('T')[0],
     }));
 
@@ -34,19 +35,22 @@ export async function POST(request: Request) {
     const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
     if (!user) return new NextResponse("User not found", { status: 404 });
 
-    const { title, description, date, personId } = await request.json();
+    const { title, description, date, peopleIds, audioData } = await request.json();
 
-    if (!title || !description || !date) {
-      return new NextResponse("Missing required fields", { status: 400 });
+    if (!title && !audioData) { // Permitir título vacío si hay audio? Mejor pedir título siempre.
+       // ...
     }
 
     const newMemory = await prisma.memory.create({
       data: {
-        title,
-        content: description,
+        title: title || "Nota de voz",
+        content: description || "",
         date: new Date(date), 
+        audioData, // Guardar audio
         userId: user.id,
-        personId: personId || null, 
+        people: {
+          connect: peopleIds ? peopleIds.map((id: string) => ({ id })) : [],
+        },
       },
     });
     return NextResponse.json(newMemory, { status: 201 });

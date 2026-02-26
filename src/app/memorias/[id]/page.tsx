@@ -72,7 +72,20 @@ export default function MemoryDetailsPage() {
       </header>
 
       <div className="bg-gray-900 rounded-xl p-6 border border-gray-800 shadow-sm">
+interface Memory {
+  // ...
+  audioData?: string;
+}
+
+// ... en el JSX ...
         <h1 className="text-2xl font-bold text-white mb-2 leading-tight">{memory.title}</h1>
+        
+        {memory.audioData && (
+          <div className="mb-6 p-4 bg-gray-800 rounded-xl border border-gray-700">
+            <p className="text-xs text-gray-400 mb-2 uppercase tracking-wider">Nota de voz</p>
+            <audio src={memory.audioData} controls className="w-full" />
+          </div>
+        )}
         
         <div className="flex items-center justify-between text-sm text-gray-500 mb-6 border-b border-gray-800 pb-4">
           <span>{new Date(memory.date).toLocaleDateString()}</span>

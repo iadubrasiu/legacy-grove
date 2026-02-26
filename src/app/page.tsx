@@ -18,7 +18,7 @@ export default async function Home() {
     where: { userId: userId },
     orderBy: { createdAt: 'desc' },
     take: 5,
-    include: { person: true }
+    include: { people: { select: { name: true, color: true, avatar: true } } }
   });
 
   const userInitial = userName.charAt(0).toUpperCase();
@@ -96,21 +96,33 @@ export default async function Home() {
             <p className="text-sm text-gray-600 mt-2">¡Sé el primero en crear uno!</p>
           </div>
         ) : (
-          memories.map((memory) => (
-            <Link key={memory.id} href={`/memorias/${memory.id}`} className="block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-sm hover:border-gray-700 transition-colors">
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-2">
-                   <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${memory.person?.color || 'bg-gray-600'}`}>
-                      {memory.person?.name?.charAt(0) || '?'}
-                   </div>
-                   <span className="text-xs text-gray-400">{memory.person?.name || 'General'}</span>
-                   <span className="text-xs text-gray-600 ml-auto">{new Date(memory.date).toLocaleDateString()}</span>
+          memories.map((memory) => {
+            const peopleNames = memory.people.map(p => p.name).join(", ");
+            const mainPerson = memory.people[0];
+            return (
+              <Link key={memory.id} href={`/memorias/${memory.id}`} className="block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-sm hover:border-gray-700 transition-colors">
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                     {memory.people.length > 0 ? (
+                       <div className="flex -space-x-2">
+                         {memory.people.slice(0, 3).map((p, i) => (
+                           <div key={i} className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold text-white border border-gray-900 ${p.color || 'bg-gray-600'}`}>
+                              {p.avatar || p.name.charAt(0)}
+                           </div>
+                         ))}
+                       </div>
+                     ) : (
+                       <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-[10px] text-white">?</div>
+                     )}
+                     <span className="text-xs text-gray-400 truncate max-w-[120px]">{peopleNames || 'General'}</span>
+                     <span className="text-xs text-gray-600 ml-auto">{new Date(memory.date).toLocaleDateString()}</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-100 mb-1">{memory.title}</h3>
+                  <p className="text-gray-400 text-sm line-clamp-2">{memory.content}</p>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-100 mb-1">{memory.title}</h3>
-                <p className="text-gray-400 text-sm line-clamp-2">{memory.content}</p>
-              </div>
-            </Link>
-          ))
+              </Link>
+            );
+          })
         )}
       </section>
 

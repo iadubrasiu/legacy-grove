@@ -76,8 +76,8 @@ model Memory {
   date      DateTime @default(now()) // Fecha del recuerdo
   createdAt DateTime @default(now())
   media     String?
-  personId  String?  // Hacerlo opcional por si acaso
+  audioData String?  // Base64 del audio grabado
   userId    String
-  person    Person?   @relation(fields: [personId], references: [id], onDelete: Cascade)
+  people    Person[]
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

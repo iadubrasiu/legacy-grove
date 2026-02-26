@@ -51,7 +51,9 @@ async function main() {
           content: stories[i] || "Un recuerdo especial que siempre guardaré.",
           date: new Date(2023, i, 15), // Fechas variadas
           userId: user.id,
-          personId: person.id
+          people: {
+            connect: [{ id: person.id }]
+          }
         }
       });
       console.log(`+ Historia creada para ${names[i]}`);

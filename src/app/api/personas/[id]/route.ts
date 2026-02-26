@@ -15,6 +15,11 @@ export async function GET(
 
     const person = await prisma.person.findUnique({
       where: { id, userId: user.id },
+      include: {
+        memories: {
+          orderBy: { date: 'desc' }
+        }
+      }
     });
 
     if (!person) return new NextResponse("Person not found", { status: 404 });

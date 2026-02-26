@@ -15,14 +15,14 @@ export async function GET(
 
     const memory = await prisma.memory.findUnique({
       where: { id, userId: user.id },
-      include: { person: { select: { name: true } } },
+      include: { people: { select: { id: true, name: true, color: true } } },
     });
 
     if (!memory) return new NextResponse("Memory not found", { status: 404 });
 
     const formattedMemory = {
       ...memory,
-      personName: memory.person?.name || null,
+      people: memory.people,
       date: memory.date.toISOString().split('T')[0],
     };
     return NextResponse.json(formattedMemory);
@@ -53,7 +53,7 @@ export async function PUT(
 ) {
   const id = params.id;
   const body = await request.json();
-  const { title, date, content, personId } = body;
+  const { title, date, content, peopleIds } = body;
 
   try {
     const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
@@ -65,7 +65,9 @@ export async function PUT(
         title,
         date: date ? new Date(date) : undefined,
         content,
-        personId: personId || null,
+        people: {
+           set: peopleIds ? peopleIds.map((pid: string) => ({ id: pid })) : [],
+        }
       },
     });
     return NextResponse.json(updatedMemory);
