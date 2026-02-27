@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
+import VoiceRecorder from "@/components/ui/VoiceRecorder";
 
 interface Person {
   id: string;
@@ -17,6 +18,7 @@ export default function EditMemoryPage() {
   const [content, setContent] = useState("");
   const [date, setDate] = useState("");
   const [selectedPeople, setSelectedPeople] = useState<string[]>([]);
+  const [audioData, setAudioData] = useState<string>("");
   const [personas, setPersonas] = useState<Person[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -38,11 +40,15 @@ export default function EditMemoryPage() {
         const memoryData = await memoryRes.json();
         
         setTitle(memoryData.title);
-        setContent(memoryData.content);
-        setDate(memoryData.date.split('T')[0]);
-        // Cargar personas seleccionadas (ahora es un array)
+        setContent(memoryData.content || "");
+        setDate(memoryData.date ? memoryData.date.split('T')[0] : "");
+        // Cargar personas seleccionadas
         if (memoryData.people) {
            setSelectedPeople(memoryData.people.map((p: any) => p.id));
+        }
+        // Cargar audio si existe
+        if (memoryData.audioData) {
+           setAudioData(memoryData.audioData);
         }
         
       } catch (err: any) {
@@ -64,8 +70,8 @@ export default function EditMemoryPage() {
     e.preventDefault();
     setError(null);
 
-    if (!title.trim() || !content.trim() || !date.trim()) {
-      setError("Todos los campos son obligatorios.");
+    if (!title.trim()) {
+      setError("El título es obligatorio.");
       return;
     }
 
@@ -77,11 +83,14 @@ export default function EditMemoryPage() {
           title, 
           content, 
           date, 
-          peopleIds: selectedPeople 
+          peopleIds: selectedPeople,
+          audioData
         }),
       });
 
       if (!res.ok) throw new Error("Failed to update memory");
+      
+      // Volver al detalle de la memoria
       router.push(`/memorias/${id}`);
       router.refresh();
     } catch (err: any) {
@@ -100,12 +109,12 @@ export default function EditMemoryPage() {
         <h1 className="text-2xl font-bold text-white">Editar Memoria</h1>
       </header>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 bg-gray-900 p-6 rounded-xl border border-gray-800 shadow-sm">
         <div>
           <label className="block text-sm font-medium text-gray-300 mb-2">Título</label>
           <input
             type="text"
-            className="w-full p-3 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
@@ -116,10 +125,9 @@ export default function EditMemoryPage() {
           <label className="block text-sm font-medium text-gray-300 mb-2">Fecha</label>
           <input
             type="date"
-            className="w-full p-3 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            required
           />
         </div>
 
@@ -147,21 +155,45 @@ export default function EditMemoryPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2">Historia</label>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Nota de voz</label>
+          {audioData && (
+             <div className="mb-2 p-2 bg-gray-800 rounded border border-gray-700">
+               <p className="text-xs text-green-400 mb-1">Audio actual guardado</p>
+               <audio src={audioData} controls className="w-full h-8" />
+             </div>
+          )}
+          <VoiceRecorder onAudioCaptured={setAudioData} />
+          <p className="text-xs text-gray-500 mt-1">Grabar uno nuevo reemplazará el actual.</p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">Historia (Texto)</label>
           <textarea
             rows={6}
-            className="w-full p-3 bg-gray-900 border border-gray-800 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-orange-500"
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            required
           ></textarea>
         </div>
 
         {error && <div className="p-3 bg-red-900/30 text-red-400 text-sm rounded">{error}</div>}
 
-        <button type="submit" className="w-full py-4 bg-blue-600 rounded-xl font-bold text-white shadow-lg active:scale-95 transition-all">
-          Guardar Cambios
-        </button>
+        <div className="flex gap-4 pt-2">
+          <button
+            type="button"
+            onClick={() => router.push(`/memorias/${id}`)}
+            className="px-4 py-3 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors flex-1"
+          >
+            Cancelar
+          </button>
+          
+          <button
+            type="submit"
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-bold shadow-lg flex-1"
+          >
+            Guardar
+          </button>
+        </div>
       </form>
     </div>
   );
