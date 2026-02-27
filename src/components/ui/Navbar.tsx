@@ -12,7 +12,7 @@ export default function Navbar() {
 
   const navItems = [
     { href: '/', icon: Home, label: 'Inicio' },
-    { href: '/memorias', icon: BookOpen, label: 'Historias' },
+    { href: '/memorias', icon: BookOpen, label: 'Memorias' },
     { href: '/arbol', icon: TreeDeciduous, label: 'Árbol' },
   ];
 

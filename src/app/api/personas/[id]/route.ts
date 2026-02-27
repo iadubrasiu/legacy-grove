@@ -53,7 +53,7 @@ export async function PUT(
 ) {
   const id = params.id;
   const body = await request.json();
-  const { name, birthDate, bio, imageUrl } = body;
+  const { name, birthDate, bio, imageUrl, role, color } = body;
 
   try {
     const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
@@ -63,6 +63,8 @@ export async function PUT(
       where: { id, userId: user.id },
       data: {
         name,
+        role,
+        color,
         birthDate: birthDate ? new Date(birthDate) : undefined,
         bio,
         imageUrl,
