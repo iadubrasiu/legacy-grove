@@ -24,7 +24,9 @@ export default function VoiceRecorder({ onAudioCaptured }: VoiceRecorderProps) {
       };
 
       mediaRecorderRef.current.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: "audio/webm" });
+        // Safari prefiere mp4, Chrome webm
+        const mimeType = MediaRecorder.isTypeSupported("audio/mp4") ? "audio/mp4" : "audio/webm";
+        const blob = new Blob(chunksRef.current, { type: mimeType });
         const url = URL.createObjectURL(blob);
         setAudioUrl(url);
         
