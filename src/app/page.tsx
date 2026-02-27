@@ -1,6 +1,6 @@
 import Link from "next/link";
 import prisma from "../lib/prisma";
-import { Plus } from "lucide-react";
+import { Plus, Search, Bell, ChevronRight } from "lucide-react";
 
 export default async function Home() {
   const user = await prisma.user.findUnique({
@@ -12,6 +12,7 @@ export default async function Home() {
 
   const people = await prisma.person.findMany({
     where: { userId: userId },
+    take: 10 // Limitar para el carrusel horizontal
   });
 
   const memories = await prisma.memory.findMany({
@@ -24,109 +25,117 @@ export default async function Home() {
   const userInitial = userName.charAt(0).toUpperCase();
 
   return (
-    <div className="p-4 relative min-h-screen bg-[#121212] pb-24">
-      <header className="mb-6 pt-4 sticky top-0 bg-[#121212]/80 backdrop-blur-md z-10 border-b border-gray-800 pb-3">
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-orange-400 to-amber-600 bg-clip-text text-transparent">
-              Hola, {userName.split(' ')[0]}
-            </h1>
-            <p className="text-gray-400 text-xs mt-0.5 tracking-wide uppercase">
-              {memories.length} recuerdos recientes
-            </p>
+    <div className="min-h-screen bg-[#1a1005] text-[#eaddcf] pb-24 font-sans">
+      {/* Cabecera Superior */}
+      <header className="px-5 pt-6 pb-4 flex justify-between items-start sticky top-0 bg-[#1a1005]/95 backdrop-blur-sm z-20">
+        <div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-6 h-6 rounded-full bg-orange-900/50 border border-orange-500/30 flex items-center justify-center">
+               <span className="text-[10px] text-orange-400">🌳</span>
+            </div>
+            <span className="text-xs font-medium tracking-wider text-orange-400 uppercase">Árbol de Memorias</span>
           </div>
-          <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg shadow-orange-500/20">
-            {userInitial}
-          </div>
+          <h1 className="text-3xl font-serif font-medium text-white">
+            Hola, {userName.split(' ')[0]}
+          </h1>
+          <p className="text-[#8c7e72] text-sm mt-1">¿Qué historia recordaremos hoy?</p>
+        </div>
+        <div className="flex gap-4 mt-2">
+           <button className="text-[#8c7e72] hover:text-orange-400 transition-colors"><Search size={22} /></button>
+           <button className="text-[#8c7e72] hover:text-orange-400 transition-colors relative">
+             <Bell size={22} />
+             <span className="absolute top-0 right-0 w-2 h-2 bg-orange-500 rounded-full border-2 border-[#1a1005]"></span>
+           </button>
         </div>
       </header>
 
-      <section className="mb-8">
-        <h2 className="text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider pl-1">
-          Miembros activos
-        </h2>
-        <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4">
+      {/* Sección Familia */}
+      <section className="mt-4 pl-5">
+        <div className="flex justify-between items-end pr-5 mb-4">
+          <h2 className="text-xs font-bold text-[#8c7e72] tracking-widest uppercase">Familia</h2>
+          <Link href="/personas" className="text-xs text-orange-500 hover:text-orange-400 flex items-center gap-1">
+            Ver todos <ChevronRight size={12} />
+          </Link>
+        </div>
+        
+        <div className="flex gap-5 overflow-x-auto pb-4 scrollbar-hide pr-5">
           {people.map((person) => (
-            <Link key={person.id} href={`/personas/${person.id}`} className="flex-shrink-0 flex flex-col items-center group">
-              <div className={`w-14 h-14 ${person.color || 'bg-gray-600'} rounded-full border-2 border-[#121212] ring-2 ring-gray-800 group-hover:ring-orange-500 transition-all flex items-center justify-center text-lg font-bold shadow-md text-white overflow-hidden`}>
-                {person.avatar ? (
-                   person.avatar.length > 2 ? <img src={person.avatar} alt={person.name} className="w-full h-full object-cover"/> : person.avatar
-                ) : (
-                  person.name.charAt(0).toUpperCase()
-                )}
+            <Link key={person.id} href={`/personas/${person.id}`} className="flex flex-col items-center gap-2 min-w-[64px] group">
+              <div className={`w-16 h-16 rounded-full border-2 border-[#1a1005] ring-1 ring-[#8c7e72]/30 p-0.5 group-hover:ring-orange-500 transition-all`}>
+                <div className={`w-full h-full rounded-full overflow-hidden flex items-center justify-center bg-[#2a2015] ${person.color || ''}`}>
+                   {person.avatar ? (
+                      person.avatar.length > 2 ? <img src={person.avatar} alt={person.name} className="w-full h-full object-cover"/> : <span className="text-2xl">{person.avatar}</span>
+                   ) : (
+                      <span className="text-xl font-serif text-[#eaddcf]">{person.name.charAt(0)}</span>
+                   )}
+                </div>
               </div>
-              <span className="text-[10px] mt-2 text-gray-400 group-hover:text-white transition-colors truncate w-16 text-center">
+              <span className="text-[11px] font-medium text-[#eaddcf] truncate w-full text-center group-hover:text-orange-400 transition-colors">
                 {person.name.split(' ')[0]}
               </span>
             </Link>
           ))}
-          <Link href="/personas/new" className="flex-shrink-0 flex flex-col items-center group">
-             <div className="w-14 h-14 bg-gray-800 rounded-full border border-dashed border-gray-600 flex items-center justify-center text-gray-400 group-hover:bg-gray-700 group-hover:border-gray-500 transition-all">
-                <Plus size={20} />
+          <Link href="/personas/new" className="flex flex-col items-center gap-2 min-w-[64px] group">
+             <div className="w-16 h-16 rounded-full border-2 border-dashed border-[#4a3e35] flex items-center justify-center text-[#4a3e35] group-hover:border-orange-500 group-hover:text-orange-500 transition-all bg-[#23180d]">
+                <Plus size={24} />
              </div>
-             <span className="text-[10px] mt-2 text-gray-500">Nuevo</span>
+             <span className="text-[11px] font-medium text-[#4a3e35] group-hover:text-orange-500 transition-colors">Añadir</span>
           </Link>
         </div>
       </section>
 
-      {/* Sección: Pregunta del día (Inspiración) */}
-      <section className="mb-8">
-        <h2 className="text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider pl-1">
-          Inspiración
-        </h2>
-        <div className="block bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-4 border border-gray-700 shadow-sm relative overflow-hidden group">
-          <div className="absolute right-0 top-0 w-24 h-full bg-gradient-to-l from-orange-500/10 via-transparent to-transparent group-hover:from-orange-500/20 transition-all" />
-          <h3 className="text-white font-medium mb-1 relative z-10">Pregunta del día</h3>
-          <p className="text-xs text-gray-400 relative z-10">¿Cuál fue el mejor viaje en familia?</p>
-          <Link href="/memorias/new?prompt=viaje" className="absolute right-4 top-1/2 -translate-y-1/2 text-orange-500 transform group-hover:translate-x-1 transition-transform">
-            Responder →
-          </Link>
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-sm font-semibold mb-3 text-gray-400 uppercase tracking-wider pl-1 flex justify-between items-end">
-          Recientes
-          <Link href="/memorias" className="text-[10px] text-orange-500 font-normal normal-case hover:underline">Ver todo</Link>
-        </h2>
+      {/* Sección Recuerdos Recientes */}
+      <section className="mt-2 px-5">
+        <h2 className="text-xs font-bold text-[#8c7e72] tracking-widest uppercase mb-4">Recuerdos Recientes</h2>
         
-        {memories.length === 0 ? (
-          <div className="text-center py-10 bg-gray-900 rounded-xl border border-dashed border-gray-800">
-            <p className="text-gray-500">Aún no hay recuerdos.</p>
-            <p className="text-sm text-gray-600 mt-2">¡Sé el primero en crear uno!</p>
-          </div>
-        ) : (
-          memories.map((memory) => {
-            const peopleNames = memory.people.map(p => p.name).join(", ");
-            const mainPerson = memory.people[0];
-            return (
-              <Link key={memory.id} href={`/memorias/${memory.id}`} className="block bg-gray-900 rounded-xl overflow-hidden border border-gray-800 shadow-sm hover:border-gray-700 transition-colors">
-                <div className="p-4">
+        <div className="space-y-4">
+          {memories.length === 0 ? (
+            <div className="text-center py-12 border border-dashed border-[#4a3e35] rounded-2xl bg-[#23180d]">
+              <p className="text-[#8c7e72] text-sm">Tu historia empieza aquí.</p>
+            </div>
+          ) : (
+            memories.map((memory) => (
+              <div key={memory.id} className="bg-[#23180d] rounded-2xl p-4 flex gap-4 border border-[#2f241a] hover:border-[#4a3e35] transition-colors relative group">
+                <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-2">
-                     {memory.people.length > 0 ? (
-                       <div className="flex -space-x-2">
-                         {memory.people.slice(0, 3).map((p, i) => (
-                           <div key={i} className={`w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold text-white border border-gray-900 ${p.color || 'bg-gray-600'}`}>
-                              {p.avatar || p.name.charAt(0)}
-                           </div>
-                         ))}
-                       </div>
-                     ) : (
-                       <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-[10px] text-white">?</div>
-                     )}
-                     <span className="text-xs text-gray-400 truncate max-w-[120px]">{peopleNames || 'General'}</span>
-                     <span className="text-xs text-gray-600 ml-auto">{new Date(memory.date).toLocaleDateString()}</span>
+                    <span className="text-[10px] font-bold text-orange-500 uppercase tracking-wider">Hace 2 horas</span>
+                    <span className="text-[10px] text-[#5c5248]">•</span>
+                    <span className="text-[10px] text-[#8c7e72] truncate">
+                      {memory.people.length > 0 ? `Por ${memory.people[0].name}` : 'General'}
+                    </span>
                   </div>
-                  <h3 className="text-lg font-semibold text-gray-100 mb-1">{memory.title}</h3>
-                  <p className="text-gray-400 text-sm line-clamp-2">{memory.content}</p>
+                  
+                  <Link href={`/memorias/${memory.id}`}>
+                    <h3 className="text-lg font-serif text-[#eaddcf] leading-snug mb-2 group-hover:text-white transition-colors">
+                      {memory.title}
+                    </h3>
+                  </Link>
+                  
+                  <p className="text-[#8c7e72] text-xs line-clamp-2 mb-4 leading-relaxed">
+                    {memory.content || "Sin descripción..."}
+                  </p>
+                  
+                  <Link href={`/memorias/${memory.id}`} className="inline-flex items-center justify-center px-4 py-1.5 rounded-full border border-[#4a3e35] text-[10px] font-medium text-[#eaddcf] hover:bg-orange-500 hover:border-orange-500 hover:text-white transition-all">
+                    Leer más
+                  </Link>
                 </div>
-              </Link>
-            );
-          })
-        )}
+                
+                {/* Placeholder para imagen (si tuvieramos) o visual decorativo */}
+                <div className="w-24 h-32 rounded-lg bg-[#2a2015] flex-shrink-0 overflow-hidden relative">
+                   <div className="absolute inset-0 bg-gradient-to-t from-[#1a1005] to-transparent opacity-50"></div>
+                   {/* Aquí iría <img /> si memory.media existiera */}
+                   <div className="w-full h-full flex items-center justify-center text-[#4a3e35]">
+                      <span className="text-4xl opacity-20">❝</span>
+                   </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </section>
 
-      <Link href="/memorias/new" className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-orange-500 to-amber-600 rounded-full shadow-[0_4px_14px_0_rgba(255,140,0,0.39)] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all z-40">
+      {/* Botón Flotante */}
+      <Link href="/memorias/new" className="fixed bottom-24 right-6 w-14 h-14 bg-orange-500 rounded-full shadow-[0_8px_20px_-6px_rgba(249,115,22,0.4)] flex items-center justify-center text-white hover:scale-105 active:scale-95 transition-all z-40">
         <Plus size={28} strokeWidth={2.5} />
       </Link>
     </div>

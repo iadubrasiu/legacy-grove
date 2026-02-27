@@ -17,7 +17,7 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#161616] border-t border-gray-800 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#1a1005] border-t border-[#2f241a] pb-safe">
       <div className="flex justify-around items-center h-16 max-w-md mx-auto px-2">
         {navItems.map(({ href, icon: Icon, label }) => {
           const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
@@ -27,7 +27,7 @@ export default function Navbar() {
               href={href} 
               className={clsx(
                 "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
-                isActive ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+                isActive ? "text-orange-500" : "text-[#8c7e72] hover:text-[#eaddcf]"
               )}
             >
               <Icon size={24} strokeWidth={isActive ? 2.5 : 2} />
@@ -41,7 +41,7 @@ export default function Navbar() {
             onClick={() => signOut({ callbackUrl: '/login' })} 
             className={clsx(
               "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
-              pathname === '/logout' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+              pathname === '/logout' ? "text-orange-500" : "text-[#8c7e72] hover:text-[#eaddcf]"
             )}
           >
             <LogOut size={24} strokeWidth={2} />
@@ -53,7 +53,7 @@ export default function Navbar() {
               href="/login" 
               className={clsx(
                 "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
-                pathname === '/login' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+                pathname === '/login' ? "text-orange-500" : "text-[#8c7e72] hover:text-[#eaddcf]"
               )}
             >
               <LogIn size={24} strokeWidth={2} />
@@ -63,7 +63,7 @@ export default function Navbar() {
               href="/register" 
               className={clsx(
                 "flex flex-col items-center justify-center w-full h-full transition-colors duration-200",
-                pathname === '/register' ? "text-[#FF9F43]" : "text-gray-500 hover:text-gray-300"
+                pathname === '/register' ? "text-orange-500" : "text-[#8c7e72] hover:text-[#eaddcf]"
               )}
             >
               <UserPlus size={24} strokeWidth={2} />
