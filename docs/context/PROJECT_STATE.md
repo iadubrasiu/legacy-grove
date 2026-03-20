@@ -1,26 +1,20 @@
 # PROJECT_STATE.md
 
-Estado actual del proyecto.
-
 ## Repo activo
-
 /home/workspace/app-recuerdos
 
+## Repo remoto
+https://github.com/iadubrasiu/legacy-grove
+
 ## Runtime
-
-OpenClaw en VPS
-
-## Deploy
-
-Vercel conectado al repo
+OpenClaw ejecutándose en el VPS
 
 ## Estado actual
+- OpenClaw está instalado y funcionando
+- El bot de Telegram responde
+- El modelo por defecto ya fue corregido a Google Gemini
+- El contexto del proyecto fue movido a `docs/context`
+- Git ya está configurado para hacer commit y push desde este VPS
 
-- Contexto limpiado
-- docs/context creado
-- Contexto movido a carpeta correcta
-- Preparando estructura final
-
-## Regla
-
-El estado debe actualizarse antes de decir "done".
+## Regla operativa
+Antes de declarar una tarea como terminada, el estado relevante debe quedar reflejado en archivos y no solo en la conversación.

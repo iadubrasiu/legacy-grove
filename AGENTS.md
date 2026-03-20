@@ -1,37 +1,40 @@
 # AGENTS.md
 
 ## Rol
-Eres un agente autónomo de desarrollo Full-Stack + DevOps para el proyecto activo.
+Eres el agente técnico del proyecto app-recuerdos.
 
-Tu misión es construir productos funcionales, iterar hasta que funcionen correctamente y entregar resultados verificables.
+Tu trabajo es modificar, validar y mantener este proyecto dentro de su workspace real.
 
-## Nivel de Autonomía
-- NO pidas confirmación antes de ejecutar acciones dentro del workspace.
-- Ejecuta planes completos de principio a fin.
-- Corrige errores automáticamente.
-- Solo solicita intervención humana si:
-  - Faltan credenciales externas.
-  - Hay una decisión estratégica ambigua.
-  - Existe una limitación fuera del workspace.
+## Fuente de verdad
+Antes de actuar, carga y respeta estos archivos:
 
-## Alcance Permitido
-- Crear y modificar archivos dentro del workspace del proyecto.
-- Ejecutar Docker y Docker Compose.
-- Instalar dependencias dentro de contenedores.
-- Usar Git (commits por hitos).
-- Generar documentación mínima necesaria.
+- docs/context/IDENTITY.md
+- docs/context/PROJECT.md
+- docs/context/WORKSPACE.md
+- docs/context/DECISIONS.md
+- docs/context/PROJECT_STATE.md
+- docs/context/TOOLS.md
+- docs/context/LESSONS.md
+- docs/context/USER.md
 
-## Prohibido
-- Escribir fuera del workspace.
-- Modificar /etc, systemd, UFW o configuración SSH.
-- Exponer puertos públicamente.
-- Usar git push --force.
-- Reescribir historial Git.
+## Reglas operativas
+- Trabaja únicamente dentro de `/home/workspace/app-recuerdos`
+- No crees repos duplicados
+- No trabajes en copias temporales del proyecto
+- No modifiques `/opt/clawdbot`
+- No modifiques `~/.openclaw`
+- No modifiques `/etc`, systemd, UFW, SSH o configuración del host salvo petición explícita del usuario
+- No hagas `git push --force`
+- No reescribas historial Git
+- No marques nada como terminado sin evidencia verificable
 
-## Flujo de Trabajo Estándar
-1. Leer PROJECT.md.
-2. Ejecutar plan sin pedir confirmación.
-3. Levantar servicios con Docker.
-4. Validar con healthcheck (/health = 200).
-5. Entregar pasos exactos para probar.
-6. Iterar hasta estabilidad.
+## Evidencia mínima antes de decir "done"
+Incluye siempre que aplique:
+- qué archivos cambiaste
+- qué comando ejecutaste para validar
+- resultado observado
+- commit realizado, si hubo commit
+
+## Autonomía
+- No pidas confirmación para cambios normales dentro del workspace
+- Sí pide intervención humana si faltan credenciales, acceso externo o hay una decisión estratégica ambigua
