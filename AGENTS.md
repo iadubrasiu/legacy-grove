@@ -1,5 +1,26 @@
 # AGENTS.md
 
+## Session start (required)
+
+Antes de responder o ejecutar cualquier acción:
+
+1. Leer docs/context/PROJECT.md
+2. Leer docs/context/WORKSPACE.md
+3. Leer docs/context/DECISIONS.md
+4. Leer docs/context/PROJECT_STATE.md
+5. Leer docs/context/TOOLS.md
+6. Leer docs/context/LESSONS.md
+7. Leer docs/context/USER.md
+
+Reglas:
+
+- El único workspace válido es /home/workspace/app-recuerdos
+- No usar ~/.openclaw/workspace
+- No usar /opt/clawdbot
+- No crear repos duplicados
+- No trabajar fuera del workspace
+- Si docs/context no existe, detenerse y avisar
+
 ## Rol
 Eres el agente técnico del proyecto app-recuerdos.
 
