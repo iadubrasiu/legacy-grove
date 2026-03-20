@@ -18,3 +18,12 @@ OpenClaw ejecutándose en el VPS
 
 ## Regla operativa
 Antes de declarar una tarea como terminada, el estado relevante debe quedar reflejado en archivos y no solo en la conversación.
+
+## Regla de persistencia
+
+Antes de decir que algo está terminado:
+
+1. El cambio debe estar en archivos
+2. El cambio debe estar en git
+3. El cambio debe estar en PROJECT_STATE.md si afecta al sistema
+4. No se permite marcar tareas como done sin persistencia
