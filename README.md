@@ -28,6 +28,8 @@ npm start
 
 Sistema controlado por OpenClaw con workspace único.
 
+Push automático funcionando.
+
 ## Health Check
 
 GET `/api/health` -> `{ ok: true, ts: ..., version: "mvp" }`
