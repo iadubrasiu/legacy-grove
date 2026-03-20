@@ -50,6 +50,18 @@ Antes de actuar, carga y respeta estos archivos:
 - No marques nada como terminado sin evidencia verificable
 
 ## Evidencia mínima antes de decir "done"
+
+Antes de declarar una tarea como terminada debes incluir:
+
+- archivos modificados
+- comandos ejecutados
+- resultado observado
+- commit realizado
+- branch usada
+- hash del commit
+
+Si no hay evidencia, la tarea NO está terminada.
+
 Incluye siempre que aplique:
 - qué archivos cambiaste
 - qué comando ejecutaste para validar
