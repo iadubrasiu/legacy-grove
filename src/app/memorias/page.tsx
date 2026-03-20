@@ -56,7 +56,7 @@ export default function MemoriasPage() {
           <ArrowLeft size={24} />
         </button>
         <div>
-          <h1 className="text-2xl font-serif font-medium text-white">
+          <h1 className="text-2xl font-serif font-medium text-white flex items-center gap-2">🧡 
             Memorias
           </h1>
           <p className="text-xs text-[#8c7e72] uppercase tracking-wider">{memorias.length} recuerdos</p>
