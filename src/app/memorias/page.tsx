@@ -42,7 +42,7 @@ export default function MemoriasPage() {
   }, []);
 
   if (loading) {
-    return <div className="text-center mt-20 text-[#8c7e72]">Cargando recuerdos...</div>;
+    return <div className="text-center mt-20 text-orange-400 font-bold">Cargando recuerdos...</div>;
   }
 
   if (error) {
