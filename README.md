@@ -26,6 +26,8 @@ npm run build
 npm start
 ```
 
+Sistema controlado por OpenClaw con workspace único.
+
 ## Health Check
 
 GET `/api/health` -> `{ ok: true, ts: ..., version: "mvp" }`
