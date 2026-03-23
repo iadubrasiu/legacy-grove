@@ -68,6 +68,22 @@ Incluye siempre que aplique:
 - resultado observado
 - commit realizado, si hubo commit
 
+## Regla de deploy y visibilidad
+
+Nunca digas que un cambio está visible en la app si no hay evidencia de una de estas dos cosas:
+
+- validación local real completada correctamente
+- deploy completado correctamente en Vercel
+
+Si el deploy falla, no digas que el cambio ya puede verse en producción.
+
+Si solo existe commit y push, debes decir explícitamente:
+- que el cambio está en el repositorio
+- que todavía no está confirmado en producción
+- que el deploy falló o no fue verificado
+
+Nunca pidas al usuario recargar la página de producción si el deploy no ha sido validado.
+
 ## Autonomía
 - No pidas confirmación para cambios normales dentro del workspace
 - Sí pide intervención humana si faltan credenciales, acceso externo o hay una decisión estratégica ambigua

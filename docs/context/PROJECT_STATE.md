@@ -27,3 +27,13 @@ Antes de decir que algo está terminado:
 2. El cambio debe estar en git
 3. El cambio debe estar en PROJECT_STATE.md si afecta al sistema
 4. No se permite marcar tareas como done sin persistencia
+
+## Regla de despliegue
+
+Un cambio no se considera visible en producción hasta que:
+1. el push esté hecho
+2. el deploy de Vercel esté completado correctamente
+3. o exista validación local real que lo demuestre
+
+Push exitoso no equivale a deploy exitoso.
+Deploy exitoso no equivale automáticamente a validación visual.
