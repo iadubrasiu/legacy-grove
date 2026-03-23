@@ -37,3 +37,16 @@ Un cambio no se considera visible en producción hasta que:
 
 Push exitoso no equivale a deploy exitoso.
 Deploy exitoso no equivale automáticamente a validación visual.
+
+## Estado de despliegue
+
+El estado del sistema debe diferenciar:
+
+- local
+- repo
+- deploy
+- producción
+
+Push != Deploy
+Deploy != Visible
+Visible != Validado

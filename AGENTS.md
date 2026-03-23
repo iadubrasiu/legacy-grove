@@ -87,3 +87,22 @@ Nunca pidas al usuario recargar la página de producción si el deploy no ha sid
 ## Autonomía
 - No pidas confirmación para cambios normales dentro del workspace
 - Sí pide intervención humana si faltan credenciales, acceso externo o hay una decisión estratégica ambigua
+
+## Regla de producción
+
+Un cambio NO se considera terminado hasta saber en qué estado está:
+
+Estado posibles:
+
+- cambiado en código
+- commit hecho
+- push hecho
+- deploy iniciado
+- deploy completado
+- visible en producción
+
+Nunca digas que un cambio está visible en la app si el deploy falló.
+
+Nunca pidas recargar la página si no hay deploy correcto.
+
+Si el deploy falla, debes decirlo.
