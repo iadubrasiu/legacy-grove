@@ -2,6 +2,8 @@ import Link from "next/link";
 import prisma from "../lib/prisma";
 import { Plus, Search, Bell, ChevronRight } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const user = await prisma.user.findUnique({
     where: { email: 'asilvafx24@gmail.com' }
@@ -35,7 +37,7 @@ export default async function Home() {
             </div>
             <span className="text-xs font-medium tracking-wider text-orange-400 uppercase">Árbol de Memorias</span>
           </div>
-          <h1 className="text-3xl font-serif font-medium text-white">
+          <h1 className="text-3xl font-serif font-medium text-white flex items-center gap-2">👋
             Hola, {userName.split(' ')[0]}
           </h1>
           <p className="text-[#8c7e72] text-sm mt-1">¿Qué historia recordaremos hoy?</p>
@@ -84,8 +86,22 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* Sección Pregunta del Día */}
+      <section className="mt-4 px-5">
+        <h2 className="text-xs font-bold text-[#8c7e72] tracking-widest uppercase mb-4">Pregunta del Día</h2>
+        <div className="bg-[#23180d] rounded-2xl p-4 border border-[#2f241a]">
+          <p className="text-[#eaddcf] text-sm mb-3">"Describe tu casa de la infancia"</p>
+          <p className="text-[#8c7e72] text-xs leading-relaxed mb-4">
+            Los rincones, los sonidos y las sensaciones de tu primer hogar. ¿A qué olía la cocina?
+          </p>
+          <Link href="/memorias/new?prompt=Describe%20tu%20casa%20de%20la%20infancia" className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-full text-xs font-medium transition-colors inline-block">
+            Responder yo
+          </Link>
+        </div>
+      </section>
+
       {/* Sección Recuerdos Recientes */}
-      <section className="mt-2 px-5">
+      <section className="mt-4 px-5">
         <h2 className="text-xs font-bold text-[#8c7e72] tracking-widest uppercase mb-4">Recuerdos Recientes</h2>
         
         <div className="space-y-4">
