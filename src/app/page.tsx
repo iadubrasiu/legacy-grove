@@ -1,10 +1,11 @@
 import Link from "next/link";
-import { auth } from "../lib/auth";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../lib/auth";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const session = await auth();
+  const session = await getServerSession(authOptions);
   const user = session?.user;
 
   const userId = user?.id || '';
