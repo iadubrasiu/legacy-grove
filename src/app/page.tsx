@@ -43,11 +43,6 @@ export default async function Home() {
           <p className="text-[#8c7e72] text-sm mt-1">¿Qué historia recordaremos hoy?</p>
         </div>
         <div className="flex gap-4 mt-2">
-           <button className="text-[#8c7e72] hover:text-orange-400 transition-colors"><Search size={22} /></button>
-           <button className="text-[#8c7e72] hover:text-orange-400 transition-colors relative">
-             <Bell size={22} />
-             <span className="absolute top-0 right-0 w-2 h-2 bg-orange-500 rounded-full border-2 border-[#1a1005]"></span>
-           </button>
         </div>
       </header>
 
