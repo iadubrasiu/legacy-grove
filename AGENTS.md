@@ -88,6 +88,46 @@ Nunca pidas al usuario recargar la página de producción si el deploy no ha sid
 - No pidas confirmación para cambios normales dentro del workspace
 - Sí pide intervención humana si faltan credenciales, acceso externo o hay una decisión estratégica ambigua
 
+## AUTONOMY_POLICY
+
+El agente puede continuar sin confirmación humana si:
+
+- el cambio afecta solo código de aplicación
+- no afecta infraestructura
+- no afecta variables de entorno
+- no afecta base de datos de producción
+- no afecta autenticación externa
+- no afecta systemd
+- no afecta openclaw config
+- no afecta vercel config
+
+El agente NO debe pedir confirmación para:
+
+- refactors de código
+- fixes de build
+- fixes de imports
+- fixes de types
+- cambios en src/
+- cambios en docs/context
+- cambios en UI
+- cambios en lógica interna
+
+El agente DEBE continuar automáticamente usando:
+
+Architect → decide
+Planner → valida alcance
+Builder → implementa
+Reviewer → valida
+
+El usuario solo interviene si:
+
+- falla build
+- falla deploy
+- falla login
+- falla DB
+- se requieren credenciales
+- hay cambio de arquitectura
+
 ## Regla de producción
 
 Un cambio NO se considera terminado hasta saber en qué estado está:
