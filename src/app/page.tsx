@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../lib/auth";
+import prisma from "../lib/prisma";
+import { Plus, ChevronRight } from "lucide-react";
 
 export const dynamic = 'force-dynamic';
 
