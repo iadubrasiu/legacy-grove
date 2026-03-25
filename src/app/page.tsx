@@ -1,13 +1,11 @@
 import Link from "next/link";
-import prisma from "../lib/prisma";
-import { Plus, Search, Bell, ChevronRight } from "lucide-react";
+import { auth } from "../lib/auth";
 
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const user = await prisma.user.findUnique({
-    where: { email: 'asilvafx24@gmail.com' }
-  });
+  const session = await auth();
+  const user = session?.user;
 
   const userId = user?.id || '';
   const userName = user?.name || 'Familia';
