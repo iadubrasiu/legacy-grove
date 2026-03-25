@@ -1,52 +1,22 @@
 # PROJECT_STATE.md
 
-## Repo activo
-/home/workspace/app-recuerdos
+## Sistema
+- **Repo activo:** /home/workspace/app-recuerdos
+- **Repo remoto:** https://github.com/iadubrasiu/legacy-grove
+- **Runtime:** OpenClaw ejecutándose en el VPS
 
-## Repo remoto
-https://github.com/iadubrasiu/legacy-grove
+## Estado del Sistema
+- OpenClaw: instalado y funcionando
+- Bot de Telegram: responde
+- Modelo por defecto: google/gemini-2.5-pro
+- Contexto del proyecto: `docs/context`
+- Git: configurado para commit y push
 
-## Runtime
-OpenClaw ejecutándose en el VPS
+## Reglas Operativas Clave
+- Antes de declarar una tarea como terminada, el estado relevante debe quedar reflejado en archivos.
+- Un cambio no se considera visible en producción hasta que el deploy de Vercel esté completado y verificado.
+- SSR dinámico (`export const dynamic = 'force-dynamic';`) debe mantenerse en la Home.
 
-## Estado actual
-- OpenClaw está instalado y funcionando
-- El bot de Telegram responde
-- El modelo por defecto ya fue corregido a Google Gemini
-- El contexto del proyecto fue movido a `docs/context`
-- Git ya está configurado para hacer commit y push desde este VPS
-
-## Regla operativa
-Antes de declarar una tarea como terminada, el estado relevante debe quedar reflejado en archivos y no solo en la conversación.
-
-## Regla de persistencia
-
-Antes de decir que algo está terminado:
-
-1. El cambio debe estar en archivos
-2. El cambio debe estar en git
-3. El cambio debe estar en PROJECT_STATE.md si afecta al sistema
-4. No se permite marcar tareas como done sin persistencia
-
-## Regla de despliegue
-
-Un cambio no se considera visible en producción hasta que:
-1. el push esté hecho
-2. el deploy de Vercel esté completado correctamente
-3. o exista validación local real que lo demuestre
-
-Push exitoso no equivale a deploy exitoso.
-Deploy exitoso no equivale automáticamente a validación visual.
-
-## Estado de despliegue
-
-El estado del sistema debe diferenciar:
-
-- local
-- repo
-- deploy
-- producción
-
-Push != Deploy
-Deploy != Visible
-Visible != Validado
+## Hitos Técnicos Verificados
+- `[2026-03-25]` `[Commit: 58b7728]` El texto "Árbol de Memorias" en la Home se confirmó como no clicable. Deploy verificado.
+- `[2026-03-25]` `[Commit: 230f74d]` Eliminada la ruta placeholder `/protected`. Deploy verificado.
