@@ -35,7 +35,7 @@ export default async function Home() {
             <div className="w-6 h-6 rounded-full bg-orange-900/50 border border-orange-500/30 flex items-center justify-center">
                <span className="text-[10px] text-orange-400">🌳</span>
             </div>
-            <span className="text-xs font-medium tracking-wider text-orange-400 uppercase">Árbol de Memorias</span>
+            <span className="text-xs font-semibold tracking-wider text-orange-400 uppercase">Árbol de Memorias</span>
           </div>
           <h1 className="text-3xl font-serif font-medium text-white flex items-center gap-2">👋
             Hola, {userName.split(' ')[0]}
