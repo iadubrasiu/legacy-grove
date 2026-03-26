@@ -1,77 +1,111 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
-import { type NextRequest } from "next/server";
-
-const TARGET_EMAIL = 'asilvafx24@gmail.com';
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const session = await getServerSession(authOptions);
 
-    const memory = await prisma.memory.findUnique({
-      where: { id, userId: user.id },
-      include: { people: { select: { id: true, name: true, color: true } } },
-    });
-
-    if (!memory) return new NextResponse("Memory not found", { status: 404 });
-
-    const formattedMemory = {
-      ...memory,
-      people: memory.people,
-      date: memory.date.toISOString().split('T')[0],
-    };
-    return NextResponse.json(formattedMemory);
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
-}
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const memory = await prisma.memory.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+    include: {
+      people: true,
+    },
+  });
 
-    await prisma.memory.delete({ where: { id, userId: user.id } });
-    return new NextResponse(null, { status: 204 });
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!memory) {
+    return new NextResponse("Not found", { status: 404 });
   }
+
+  return NextResponse.json({
+    ...memory,
+    date: memory.date.toISOString().split("T")[0],
+  });
 }
 
 export async function PUT(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  const body = await request.json();
-  const { title, date, content, peopleIds } = body;
+  const session = await getServerSession(authOptions);
 
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
-
-    const updatedMemory = await prisma.memory.update({
-      where: { id, userId: user.id },
-      data: {
-        title,
-        date: date ? new Date(date) : undefined,
-        content,
-        people: {
-           set: peopleIds ? peopleIds.map((pid: string) => ({ id: pid })) : [],
-        }
-      },
-    });
-    return NextResponse.json(updatedMemory);
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const body = await req.json();
+
+  const existing = await prisma.memory.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+  });
+
+  if (!existing) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  const validPeople = Array.isArray(body.peopleIds) && body.peopleIds.length > 0
+    ? await prisma.person.findMany({
+        where: {
+          id: { in: body.peopleIds },
+          userId: session.user.id,
+        },
+        select: { id: true },
+      })
+    : [];
+
+  const updated = await prisma.memory.update({
+    where: { id: params.id },
+    data: {
+      title: body.title,
+      content: body.content,
+      audioData: body.audioData,
+      date: body.date ? new Date(body.date) : undefined,
+      people: {
+        set: validPeople.map((p) => ({ id: p.id })),
+      },
+    },
+  });
+
+  return NextResponse.json(updated);
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const existing = await prisma.memory.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+  });
+
+  if (!existing) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  await prisma.memory.delete({
+    where: { id: params.id },
+  });
+
+  return new NextResponse(null, { status: 204 });
 }

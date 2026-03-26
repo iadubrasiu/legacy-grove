@@ -1,45 +1,41 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../lib/prisma";
-
-// HARDCODED USER FOR PUBLIC ACCESS
-const TARGET_EMAIL = 'asilvafx24@gmail.com';
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET() {
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const session = await getServerSession(authOptions);
 
-    const personas = await prisma.person.findMany({
-      where: { userId: user.id },
-    });
-    return NextResponse.json(personas);
-  } catch (error: any) {
-    console.error("Error fetching personas:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const personas = await prisma.person.findMany({
+    where: {
+      userId: session.user.id,
+    },
+  });
+
+  return NextResponse.json(personas);
 }
 
 export async function POST(request: Request) {
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const session = await getServerSession(authOptions);
 
-    const { name } = await request.json();
-
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-
-    const newPerson = await prisma.person.create({
-      data: {
-        name,
-        role: "Miembro", 
-        userId: user.id,
-      },
-    });
-    return NextResponse.json(newPerson, { status: 201 });
-  } catch (error: any) {
-    console.error("Error creating persona:", error);
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const body = await request.json();
+
+  const person = await prisma.person.create({
+    data: {
+      name: body.name,
+      role: body.role || "Miembro",
+      color: body.color || "bg-blue-600",
+      userId: session.user.id,
+    },
+  });
+
+  return NextResponse.json(person);
 }

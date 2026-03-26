@@ -1,77 +1,90 @@
 import { NextResponse } from "next/server";
-import prisma from "../../../../lib/prisma";
-import { type NextRequest } from "next/server";
-
-const TARGET_EMAIL = 'asilvafx24@gmail.com';
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function GET(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const session = await getServerSession(authOptions);
 
-    const person = await prisma.person.findUnique({
-      where: { id, userId: user.id },
-      include: {
-        memories: {
-          orderBy: { date: 'desc' }
-        }
-      }
-    });
-
-    if (!person) return new NextResponse("Person not found", { status: 404 });
-    return NextResponse.json(person);
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
-}
 
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const id = params.id;
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
+  const person = await prisma.person.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+    include: {
+      memories: true,
+    },
+  });
 
-    await prisma.person.delete({
-      where: { id, userId: user.id },
-    });
-    return new NextResponse(null, { status: 204 });
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!person) {
+    return new NextResponse("Not found", { status: 404 });
   }
+
+  return NextResponse.json(person);
 }
 
 export async function PUT(
-  request: NextRequest,
+  req: Request,
   { params }: { params: { id: string } }
 ) {
-  const id = params.id;
-  const body = await request.json();
-  const { name, birthDate, bio, imageUrl, role, color } = body;
+  const session = await getServerSession(authOptions);
 
-  try {
-    const user = await prisma.user.findUnique({ where: { email: TARGET_EMAIL } });
-    if (!user) return new NextResponse("User not found", { status: 404 });
-
-    const updatedPerson = await prisma.person.update({
-      where: { id, userId: user.id },
-      data: {
-        name,
-        role,
-        color,
-        birthDate: birthDate ? new Date(birthDate) : undefined,
-        bio,
-        imageUrl,
-      },
-    });
-    return NextResponse.json(updatedPerson);
-  } catch (error: any) {
-    return new NextResponse("Internal Server Error", { status: 500 });
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
   }
+
+  const existing = await prisma.person.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+  });
+
+  if (!existing) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  const body = await req.json();
+
+  const updated = await prisma.person.update({
+    where: { id: params.id },
+    data: body,
+  });
+
+  return NextResponse.json(updated);
+}
+
+export async function DELETE(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.id) {
+    return new NextResponse("Unauthorized", { status: 401 });
+  }
+
+  const existing = await prisma.person.findFirst({
+    where: {
+      id: params.id,
+      userId: session.user.id,
+    },
+  });
+
+  if (!existing) {
+    return new NextResponse("Not found", { status: 404 });
+  }
+
+  await prisma.person.delete({
+    where: { id: params.id },
+  });
+
+  return new NextResponse(null, { status: 204 });
 }
